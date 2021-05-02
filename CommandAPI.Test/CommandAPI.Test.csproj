@@ -23,4 +23,8 @@
     <ProjectReference Include="..\CommandAPI\CommandAPI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="test\" />
+  </ItemGroup>
+
 </Project>
