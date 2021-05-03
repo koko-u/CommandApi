@@ -1,1 +1,5 @@
 GET http://localhost:26535/api/commands
+
+###
+
+GET http://localhost:26535/api/commands/10
