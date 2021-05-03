@@ -7,6 +7,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommandApi.Repositories;
+using CommandApi.Repositories.Impl;
 
 namespace CommandApi
 {
@@ -17,6 +19,7 @@ namespace CommandApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<ICommandApiRepository, MockCommandApiRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
