@@ -3,6 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <StartupObject>CommandApi.Program</StartupObject>
     <RootNamespace></RootNamespace>
+    <UserSecretsId>4C5E4E9C-8506-4463-AD05-17403626142F</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.5" />
