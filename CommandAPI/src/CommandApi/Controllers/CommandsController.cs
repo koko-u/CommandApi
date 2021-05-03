@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CommandApi.Models;
+using CommandApi.Repositories;
 
 namespace CommandApi.Controllers
 {
@@ -10,13 +12,28 @@ namespace CommandApi.Controllers
     [ApiController]
     public class CommandsController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        private readonly ICommandApiRepository _repository;
+
+        public CommandsController(ICommandApiRepository repository)
         {
-            return new string[]
-            {
-                "this", "is", "hard", "coded"
-            };
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<Command>> GetAllCommands()
+        {
+            var commands = _repository.GetAllCommands();
+            return Ok(commands);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<Command> GetCommandById(int id)
+        {
+            var command = _repository.GetCommandById(id);
+            return command.Match<ActionResult<Command>>(
+                found => Ok(found),
+                () => NotFound()
+            );
         }
     }
 }
