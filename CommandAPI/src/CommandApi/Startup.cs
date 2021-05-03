@@ -12,6 +12,7 @@ using CommandApi.Repositories;
 using CommandApi.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MySqlConnector;
 
 namespace CommandApi
 {
@@ -28,12 +29,18 @@ namespace CommandApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            var connectionString = Configuration.GetConnectionString("CmdAPIConnection");
-                services.AddControllers();
+            services.AddControllers();
             services.AddScoped<ICommandApiRepository, SqlCommandApiRepository>();
+
+            var connectionString = Configuration.GetConnectionString("CmdAPIConnection");
+            var builder = new MySqlConnectionStringBuilder(connectionString)
+            {
+                UserID = Configuration["User ID"],
+                Password = Configuration["Password"]
+            };
             services.AddDbContext<CommandContext>(opt =>
             {
-                opt.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                opt.UseMySql(builder.ConnectionString, ServerVersion.AutoDetect(builder.ConnectionString));
             });
         }
 
