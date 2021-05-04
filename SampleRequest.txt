@@ -3,3 +3,35 @@ GET http://localhost:5000/api/commands
 ###
 
 GET http://localhost:5000/api/commands/1
+
+###
+
+POST http://localhost:5000/api/commands
+Content-Type: application/json
+
+{
+    "howTo": "Build a .NET Core App",
+    "platform": ".NET Core CLI",
+    "commandLine": "dotnet build"
+}
+
+### Ill-formed
+
+POST http://localhost:5000/api/commands
+Content-Type: application/json
+
+{
+    "howTo": "Build a .NET Core App"
+    "platform": ".NET Core CLI"
+    "commandLine": "dotnet build"
+}
+
+### lack attribute
+
+POST http://localhost:5000/api/commands
+Content-Type: application/json
+
+{
+    "howTo": "Build a .NET Core App",
+    "platform": ".NET Core CLI"
+}

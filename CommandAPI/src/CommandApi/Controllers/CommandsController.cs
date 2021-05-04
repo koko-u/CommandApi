@@ -33,7 +33,7 @@ namespace CommandApi.Controllers
             return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commands));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = nameof(GetCommandById))]
         public ActionResult<CommandReadDto> GetCommandById(int id)
         {
             var command = _repository.GetCommandById(id);
@@ -41,6 +41,18 @@ namespace CommandApi.Controllers
                 found => Ok(_mapper.Map<CommandReadDto>(found)),
                 () => NotFound()
             );
+        }
+
+        [HttpPost]
+        public ActionResult<CommandReadDto> CreateCommand(CommandCreateDto dto)
+        {
+            var command = _mapper.Map<Command>(dto);
+            _repository.CreateCommand(command);
+            _repository.SaveChanges();
+            // after call SaveChanges, it affects command instance's Id property.
+
+            var commandReadDto = _mapper.Map<CommandReadDto>(command);
+            return CreatedAtRoute(nameof(GetCommandById), new {Id = commandReadDto.Id}, commandReadDto);
         }
     }
 }
