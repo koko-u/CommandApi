@@ -13,6 +13,7 @@ using CommandApi.Repositories.Impl;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MySqlConnector;
+using Newtonsoft.Json.Serialization;
 
 namespace CommandApi
 {
@@ -29,7 +30,11 @@ namespace CommandApi
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            var mvcBuilder = services.AddControllers();
+            mvcBuilder.AddNewtonsoftJson(opt =>
+            {
+                opt.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            });
             services.AddScoped<ICommandApiRepository, SqlCommandApiRepository>();
 
             var connectionString = Configuration.GetConnectionString("CmdAPIConnection");

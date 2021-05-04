@@ -7,6 +7,7 @@ using AutoMapper;
 using CommandApi.Dtos;
 using CommandApi.Models;
 using CommandApi.Repositories;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace CommandApi.Controllers
 {
@@ -20,7 +21,7 @@ namespace CommandApi.Controllers
         public CommandsController(
             ICommandApiRepository repository,
             IMapper mapper
-            )
+        )
         {
             _repository = repository;
             _mapper = mapper;
@@ -33,13 +34,82 @@ namespace CommandApi.Controllers
             return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commands));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = nameof(GetCommandById))]
         public ActionResult<CommandReadDto> GetCommandById(int id)
         {
             var command = _repository.GetCommandById(id);
             return command.Match<ActionResult<CommandReadDto>>(
                 found => Ok(_mapper.Map<CommandReadDto>(found)),
                 () => NotFound()
+            );
+        }
+
+        [HttpPost]
+        public ActionResult<CommandReadDto> CreateCommand(CommandCreateDto dto)
+        {
+            var command = _mapper.Map<Command>(dto);
+            _repository.CreateCommand(command);
+            _repository.SaveChanges();
+            // after call SaveChanges, it affects command instance's Id property.
+
+            var commandReadDto = _mapper.Map<CommandReadDto>(command);
+            return CreatedAtRoute(nameof(GetCommandById), new {Id = commandReadDto.Id}, commandReadDto);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateCommand(int id, CommandUpdateDto dto)
+        {
+            var optCommand = _repository.GetCommandById(id);
+            return optCommand.Match<ActionResult>(
+                some: (command) =>
+                {
+                    _mapper.Map(dto, command);
+                    _repository.UpdateCommand(command); // no effect
+                    _repository.SaveChanges();
+
+                    return NoContent();
+                },
+                none: NotFound
+            );
+        }
+
+        [HttpPatch("{id}")]
+        public ActionResult PartialCommandUpdate(int id, JsonPatchDocument<CommandUpdateDto> patchDoc)
+        {
+            var optCommand = _repository.GetCommandById(id);
+            return optCommand.Match<ActionResult>(
+                some: (command) =>
+                {
+                    var commandToPatch = _mapper.Map<CommandUpdateDto>(command);
+                    patchDoc.ApplyTo(commandToPatch, ModelState);
+                    if (!TryValidateModel(commandToPatch))
+                    {
+                        return ValidationProblem(ModelState);
+                    }
+
+                    _mapper.Map(commandToPatch, command);
+                    _repository.UpdateCommand(command);
+                    _repository.SaveChanges();
+
+                    return NoContent();
+                },
+                none: NotFound
+            );
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteCommand(int id)
+        {
+            var optCommand = _repository.GetCommandById(id);
+            return optCommand.Match<ActionResult>(
+                some: (command) =>
+                {
+                    _repository.DeleteCommand(command);
+                    _repository.SaveChanges();
+
+                    return NoContent();
+                },
+                none: NotFound
             );
         }
     }

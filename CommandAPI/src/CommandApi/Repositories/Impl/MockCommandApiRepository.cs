@@ -71,7 +71,7 @@ namespace CommandApi.Repositories.Impl
         }
 
         /// <inheritdoc />
-        public void DeleteCommand(int id)
+        public void DeleteCommand(Command cmd)
         {
             throw new NotImplementedException();
         }

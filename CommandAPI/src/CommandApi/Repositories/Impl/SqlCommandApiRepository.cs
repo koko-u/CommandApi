@@ -4,8 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommandApi.DataSource;
 using CommandApi.Models;
+using Microsoft;
+using Microsoft.Extensions.DependencyInjection;
 using Optional;
 using Optional.Collections;
+
 
 namespace CommandApi.Repositories.Impl
 {
@@ -21,7 +24,8 @@ namespace CommandApi.Repositories.Impl
         /// <inheritdoc />
         public bool SaveChanges()
         {
-            throw new NotImplementedException();
+            var affected = _context.SaveChanges();
+            return affected > 0;
         }
 
         /// <inheritdoc />
@@ -39,19 +43,21 @@ namespace CommandApi.Repositories.Impl
         /// <inheritdoc />
         public void CreateCommand(Command cmd)
         {
-            throw new NotImplementedException();
+            Requires.NotNull(cmd, nameof(cmd));
+            _context.CommandItems.Add(cmd);
         }
 
         /// <inheritdoc />
         public void UpdateCommand(Command cmd)
         {
-            throw new NotImplementedException();
+            // no need to implement UpdateCommand method.
         }
 
         /// <inheritdoc />
-        public void DeleteCommand(int id)
+        public void DeleteCommand(Command cmd)
         {
-            throw new NotImplementedException();
+            Requires.NotNull(cmd, nameof(cmd));
+            _context.CommandItems.Remove(cmd);
         }
     }
 }
