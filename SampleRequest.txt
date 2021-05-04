@@ -69,3 +69,16 @@ Content-Type: application/json
     "platform": ".NET Core CLI",
     "commandLine": "dotnet run"
 }
+
+###
+
+PATCH http://localhost:5000/api/commands/3
+Content-Type: application/json
+
+[
+    {
+        "op": "replace",
+        "path": "/howTo",
+        "value": "Run a .NET Core 3.1 App"
+    }
+]
