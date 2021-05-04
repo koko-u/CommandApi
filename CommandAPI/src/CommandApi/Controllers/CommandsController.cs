@@ -64,13 +64,13 @@ namespace CommandApi.Controllers
                 some: (command) =>
                 {
                     _mapper.Map(dto, command);
-                    _repository.UpdateCommand(command);  // no effect
+                    _repository.UpdateCommand(command); // no effect
                     _repository.SaveChanges();
 
                     return NoContent();
                 },
                 none: NotFound
-                );
+            );
         }
 
         [HttpPatch("{id}")]
@@ -89,6 +89,22 @@ namespace CommandApi.Controllers
 
                     _mapper.Map(commandToPatch, command);
                     _repository.UpdateCommand(command);
+                    _repository.SaveChanges();
+
+                    return NoContent();
+                },
+                none: NotFound
+            );
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteCommand(int id)
+        {
+            var optCommand = _repository.GetCommandById(id);
+            return optCommand.Match<ActionResult>(
+                some: (command) =>
+                {
+                    _repository.DeleteCommand(command);
                     _repository.SaveChanges();
 
                     return NoContent();

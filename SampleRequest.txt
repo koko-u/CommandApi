@@ -82,3 +82,7 @@ Content-Type: application/json
         "value": "Run a .NET Core 3.1 App"
     }
 ]
+
+###
+
+DELETE http://localhost:5000/api/commands/4

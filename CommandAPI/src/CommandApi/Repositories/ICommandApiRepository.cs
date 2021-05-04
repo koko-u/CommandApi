@@ -19,6 +19,6 @@ namespace CommandApi.Repositories
 
         void UpdateCommand(Command cmd);
 
-        void DeleteCommand(int id);
+        void DeleteCommand(Command cmd);
     }
 }
