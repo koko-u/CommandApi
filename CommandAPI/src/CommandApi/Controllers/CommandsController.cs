@@ -20,7 +20,7 @@ namespace CommandApi.Controllers
         public CommandsController(
             ICommandApiRepository repository,
             IMapper mapper
-            )
+        )
         {
             _repository = repository;
             _mapper = mapper;
@@ -54,5 +54,22 @@ namespace CommandApi.Controllers
             var commandReadDto = _mapper.Map<CommandReadDto>(command);
             return CreatedAtRoute(nameof(GetCommandById), new {Id = commandReadDto.Id}, commandReadDto);
         }
-    }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateCommand(int id, CommandUpdateDto dto)
+        {
+            var optCommand = _repository.GetCommandById(id);
+            return optCommand.Match<ActionResult>(
+                some: (command) =>
+                {
+                    _mapper.Map(dto, command);
+                    _repository.UpdateCommand(command);  // no effect
+                    _repository.SaveChanges();
+
+                    return NoContent();
+                },
+                none: NotFound
+                );
+        }
+}
 }

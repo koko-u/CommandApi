@@ -35,3 +35,37 @@ Content-Type: application/json
     "howTo": "Build a .NET Core App",
     "platform": ".NET Core CLI"
 }
+
+###
+
+PUT http://localhost:5000/api/commands/3
+Content-Type: application/json
+
+{
+    "howTo": "Run a .NET Core App",
+    "platform": ".NET Core CLI",
+    "commandLine": "dotnet run"
+
+}
+
+### lack attr
+
+PUT http://localhost:5000/api/commands/3
+Content-Type: application/json
+
+{
+    "howTo": "Run a .NET Core App",
+    "commandLine": "dotnet run"
+
+}
+
+### invalid ID
+
+PUT http://localhost:5000/api/commands/300
+Content-Type: application/json
+
+{
+    "howTo": "Run a .NET Core App",
+    "platform": ".NET Core CLI",
+    "commandLine": "dotnet run"
+}

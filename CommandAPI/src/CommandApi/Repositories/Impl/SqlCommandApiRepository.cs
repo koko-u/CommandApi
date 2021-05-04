@@ -50,12 +50,13 @@ namespace CommandApi.Repositories.Impl
         /// <inheritdoc />
         public void UpdateCommand(Command cmd)
         {
-            throw new NotImplementedException();
+            // no need to implement UpdateCommand method.
         }
 
         /// <inheritdoc />
         public void DeleteCommand(int id)
         {
+
             throw new NotImplementedException();
         }
     }
